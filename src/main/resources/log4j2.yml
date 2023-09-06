@@ -1,0 +1,30 @@
+Configuration:
+    name: Default
+    status: info
+
+    Properties:
+        Property:
+            - name: "pattern"
+              value: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{[%-5level]} [%F] %c{1} - %msg%n"
+            - name: "charset-UTF-8"
+              value: "UTF-8"
+
+    Appenders:
+        Console:
+            name: Console_Appender
+            target: SYSTEM_OUT
+            PatternLayout:
+                charset: ${charset-UTF-8}
+                pattern: ${pattern}
+                disableAnsi: false
+    Loggers:
+        Root:
+            level: info
+            AppenderRef:
+                - ref: Console_Appender
+        Logger:
+            name: com.test
+            additivity: false
+            level: debug
+            AppenderRef:
+                - ref: Console_Appender
