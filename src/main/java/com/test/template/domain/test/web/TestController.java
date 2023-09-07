@@ -1,6 +1,6 @@
 package com.test.template.domain.test.web;
 
-import com.test.template.domain.test.dto.TestDTO;
+import com.test.template.domain.test.dto.TestDto;
 import com.test.template.domain.test.service.TestService;
 import com.test.template.global.common.Result;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class TestController {
     @GetMapping("/list")
     public ResponseEntity<Result> findAll(){
 
-        List<TestDTO> result = testService.findAll();
+        List<TestDto> result = testService.findAll();
         return ResponseEntity.ok(new Result(result));
 
     }

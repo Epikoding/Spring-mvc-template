@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class BaseDTO {
+public class BaseDto {
 
     @Schema(description = "PK String UUID", accessMode = Schema.AccessMode.READ_ONLY)
     private String id;
