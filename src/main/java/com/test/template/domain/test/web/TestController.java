@@ -6,24 +6,28 @@ import com.test.template.global.common.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("test")
+@RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
 
     private final TestService testService;
 
     @GetMapping("/list")
-    public ResponseEntity<Result> findAll(){
+    public ResponseEntity<Result> findAll() {
+        return ResponseEntity.ok(new Result(testService.findAll()));
+    }
 
-        List<TestDto> result = testService.findAll();
-        return ResponseEntity.ok(new Result(result));
-
+    @PostMapping
+    public ResponseEntity<Result> addTest(@RequestBody TestDto.Request testDto) {
+        return ResponseEntity.ok(new Result(testService.save(testDto)));
     }
 
 }

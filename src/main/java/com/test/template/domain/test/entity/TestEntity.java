@@ -8,8 +8,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
+
 import java.time.LocalDateTime;
 
 import com.test.template.global.common.BaseEntity;
@@ -25,27 +25,38 @@ import com.test.template.global.common.BaseEntity;
 @SQLDelete(sql = "UPDATE test SET deleted = true WHERE id = ?")
 public class TestEntity extends BaseEntity {
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(/*name = "email", unique = true, nullable = false*/)
     private String email;
 
-    @Column(name = "phone", unique = true, nullable = false)
+    @Column(/*name = "phone", unique = true, nullable = false*/)
     private String phone;
 
-    @Column(name = "name", nullable = false)
+    @Column(/*name = "name", nullable = false*/)
     private String name;
 
-    @Column(name = "password", nullable = false)
+    @Column(/*name = "password", nullable = false*/)
     private String password;
 
-    @Column(name = "enabled")
+    @Column(/*name = "enabled"*/)
     private Boolean enabled = true;
 
-    @Column(name = "locked")
+    @Column(/*name = "locked"*/)
     private Boolean locked = false;
 
-    @Column(name = "failed_attempt")
+    @Column(/*name = "failed_attempt"*/)
     private int failedAttempt;
 
-    @Column(name = "password_updated_at")
+    @Column(/*name = "password_updated_at"*/)
     private LocalDateTime passwordUpdatedAt;
+
+    public TestEntity(String email, String phone, String name, String password) {
+        this.email = email;
+        this.phone = phone;
+        this.name = name;
+        this.password = password;
+    }
+
+    public static TestEntity createInstance(String email, String phone, String name, String password) {
+        return new TestEntity(email, phone, name, password);
+    }
 }
