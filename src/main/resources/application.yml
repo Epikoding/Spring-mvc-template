@@ -35,8 +35,13 @@ spring:
 
 logging:
   level:
-    root: info
-    org.hibernate.orm.jdbc.bind: trace
+    root: warn
+    org.hibernate.SQL: warn
+    org.hibernate.type: warn
+    org.hibernate:
+      type:
+        descriptor.sql: warn
+
 
 management:
   endpoint:
@@ -50,10 +55,11 @@ management:
 
 eureka:
   client:
-    register-with-eureka: true
-    fetch-registry: true
+#    register-with-eureka: true
+#    fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+    enabled: false
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8

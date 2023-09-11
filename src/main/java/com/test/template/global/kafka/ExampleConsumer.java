@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.function.Consumer;
 
-@Configuration
+//@Configuration
 @RequiredArgsConstructor
 @Slf4j
 public class ExampleConsumer {
