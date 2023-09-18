@@ -23,13 +23,13 @@ public class TestDto {
     @Getter
     @NoArgsConstructor
     public static class Response {
-        private String id;
+        private Long id;
 
-        public Response(String id) {
+        public Response(Long id) {
             this.id = id;
         }
 
-        public static Response from(String id) {
+        public static Response from(Long id) {
             return new Response(id);
         }
     }

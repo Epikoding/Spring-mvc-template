@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -66,7 +65,7 @@ class TestControllerTest {
         assertNotNull(response.getId());
         assertNotEquals(request.getId(), response.getId()); // request의 id와 response의 id가 달라야 함.
         try {
-            UUID uuid = UUID.fromString(response.getId());
+            Long l = response.getId();
         } catch (IllegalArgumentException e) {
             fail("ID is not a valid UUID");
         }
@@ -104,7 +103,7 @@ class TestControllerTest {
     private static String getUserInfoJson() {
         return
                 "{"
-                        + "\"id\":\"THIS_IS_USER_UUID_1\","
+                        + "\"id\":\"135\","
                         + "\"email\":\"user@example.com\","
                         + "\"phone\":\"012-3456-7890\","
                         + "\"name\":\"John Doe\","
