@@ -4,10 +4,13 @@ import com.test.template.domain.test.dto.TestDto;
 import com.test.template.domain.test.entity.TestEntity;
 import com.test.template.domain.test.repository.TestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.test.template.global.common.enums.CacheType.CacheTimeConfig.CACHE_10_SECOND;
 
 @Service
 @Transactional
@@ -15,6 +18,7 @@ import java.util.List;
 public class TestService {
     private final TestRepository testRepository;
 
+    @Cacheable(value = CACHE_10_SECOND, keyGenerator = "customKeyGenerator")
     public List<TestDto.Response> findAll() {
         List<TestEntity> entity = testRepository.findAll();
 
