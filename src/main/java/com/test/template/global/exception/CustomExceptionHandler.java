@@ -20,7 +20,6 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.nio.file.AccessDeniedException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -30,32 +29,20 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class CustomExceptionHandler {
 
-    private void logRequestDetails(WebRequest request) {
-        String requestURI = request.getDescription(false).replace("uri=", ""); // Gets the request URI
-        String queryParams = request.getParameterMap().entrySet().stream()
-                .map(entry -> entry.getKey() + "=" + Arrays.toString(entry.getValue()))
-                .collect(Collectors.joining("&"));
-
-        log.error("Exception occurred at URI: {} with params: {}", requestURI, queryParams);
-    }
-
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Result> entityNotFoundException(EntityNotFoundException exception, WebRequest request) {
-        logRequestDetails(request);
         return new ResponseEntity<>(new Result(HttpStatus.NO_CONTENT), HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
     }
 
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Result> entityExistsException(EntityExistsException exception, WebRequest request) {
-        logRequestDetails(request);
         return new ResponseEntity<>(new Result(HttpStatus.CONFLICT), HttpStatusCode.valueOf(HttpStatus.CONFLICT.value()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Result> IllegalArgumentException(IllegalArgumentException exception, WebRequest request) {
-        logRequestDetails(request);
         if (Objects.isNull(exception.getMessage())) {
-            return new ResponseEntity<>(new Result(HttpStatus.NO_CONTENT), HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
+            return new ResponseEntity<>(new Result(HttpStatus.BAD_REQUEST), HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value()));
         } else {
             Result errorResult = new Result(HttpStatus.NO_CONTENT, exception.getMessage());
             return ResponseEntity.badRequest().body(errorResult);
@@ -64,7 +51,6 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Result> handleNoSuchElementException(NoSuchElementException exception, WebRequest request) {
-        logRequestDetails(request);
         if (Objects.isNull(exception.getMessage())) {
             return new ResponseEntity<>(new Result(HttpStatus.NOT_FOUND), HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()));
         } else {
@@ -79,7 +65,6 @@ public class CustomExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Result> handleValidationExceptions(MethodArgumentNotValidException exception, WebRequest request) {
-        logRequestDetails(request);
         List<org.springframework.validation.FieldError> exceptionFieldErrors = exception.getFieldErrors();
         List<FieldError> fieldErrorList = exceptionFieldErrors.stream()
                 .map(fieldError -> new FieldError(fieldError.getField(), fieldError.getDefaultMessage()))
@@ -93,7 +78,6 @@ public class CustomExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<Result> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception, WebRequest request) {
-        logRequestDetails(request);
         FieldError fieldError = new FieldError(exception.getName(), exception.getMessage());
         Result errorResult = new Result(HttpStatus.BAD_REQUEST, fieldError);
         return ResponseEntity.badRequest().body(errorResult);
@@ -105,7 +89,6 @@ public class CustomExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     protected ResponseEntity<Result> handleMissingServletRequestParameterException(MissingServletRequestParameterException exception, WebRequest request) {
-        logRequestDetails(request);
         FieldError fieldError = new FieldError(exception.getParameterName(), exception.getMessage());
         Result errorResult = new Result(HttpStatus.BAD_REQUEST, fieldError);
         return ResponseEntity.badRequest().body(errorResult);
@@ -116,20 +99,17 @@ public class CustomExceptionHandler {
      */
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<Result> handleAccessDeniedException(AccessDeniedException exception, WebRequest request) {
-        logRequestDetails(request);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Result(HttpStatus.FORBIDDEN));
     }
 
     @ExceptionHandler(AsyncRequestTimeoutException.class)
     public ResponseEntity<Result> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException exception, WebRequest request) {
-        logRequestDetails(request);
         Result errorResult = new Result(HttpStatus.REQUEST_TIMEOUT, "Asynchronous request timeout"); // Response entity indicating request timeout
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(errorResult);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Result> handleJSONParseError(HttpMessageNotReadableException exception, WebRequest request) {
-        logRequestDetails(request);
 
         Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -149,20 +129,24 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomFeignClientException.class)
     public ResponseEntity<String> handleFeignClientException(CustomFeignClientException exception, WebRequest request) {
-        logRequestDetails(request);
         log.error("FeignClientException: {}", exception.getMessage());
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.valueOf(exception.getStatus()));
     }
 
     @ExceptionHandler(ClientAbortException.class)
-    public void handleClientAbortException(ClientAbortException e, WebRequest request) {
-        logRequestDetails(request);
-        log.debug("ClientAbortException: Broken pipe - client likely disconnected. Message: {}", e.getMessage());
+    public void handleClientAbortException(ClientAbortException exception, WebRequest request) {
+        log.debug("ClientAbortException: Broken pipe - client likely disconnected. Message: {}", exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Result> handleException(Exception exception, WebRequest request) {
-        logRequestDetails(request);
+
+        if (Objects.nonNull(exception.getCause())) {
+            log.error("Exception occurred: " + exception.getMessage() + "; Cause: " + exception.getCause().toString());
+        } else {
+            log.error("Exception occurred: " + exception.getMessage());
+        }
+
         return ResponseEntity.internalServerError().body(new Result(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }
