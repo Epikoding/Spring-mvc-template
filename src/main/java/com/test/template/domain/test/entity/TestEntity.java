@@ -13,6 +13,7 @@ import org.hibernate.annotations.SQLDelete;
 import java.time.LocalDateTime;
 
 import com.test.template.global.common.BaseEntity;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -22,6 +23,7 @@ import com.test.template.global.common.BaseEntity;
         name = "test",
         indexes = {@Index(columnList = "deleted")}
 )
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE test SET deleted = true WHERE id = ?")
 public class TestEntity extends BaseEntity {
 
