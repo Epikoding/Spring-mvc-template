@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -31,12 +32,12 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Result> entityNotFoundException(EntityNotFoundException exception, WebRequest request) {
-        return new ResponseEntity<>(new Result(HttpStatus.NO_CONTENT), HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
+        return new ResponseEntity<>(new Result(HttpStatus.NOT_FOUND, exception.getMessage()), HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()));
     }
 
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Result> entityExistsException(EntityExistsException exception, WebRequest request) {
-        return new ResponseEntity<>(new Result(HttpStatus.CONFLICT), HttpStatusCode.valueOf(HttpStatus.CONFLICT.value()));
+        return new ResponseEntity<>(new Result(HttpStatus.CONFLICT, exception.getMessage()), HttpStatusCode.valueOf(HttpStatus.CONFLICT.value()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -59,10 +60,13 @@ public class CustomExceptionHandler {
         }
     }
 
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<Result> handleHttpClientErrorException(HttpClientErrorException exception, WebRequest request) {
+        log.error("HttpClientErrorException: {}", exception.getMessage());
 
-    /**
-     * @Valid or @Validated 으로 binding error 발생시 발생한다.
-     */
+        return ResponseEntity.status(exception.getStatusCode()).body(new Result((HttpStatus) exception.getStatusCode(), exception.getStatusText()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Result> handleValidationExceptions(MethodArgumentNotValidException exception, WebRequest request) {
         List<org.springframework.validation.FieldError> exceptionFieldErrors = exception.getFieldErrors();
@@ -73,9 +77,6 @@ public class CustomExceptionHandler {
         return ResponseEntity.badRequest().body(errorResult);
     }
 
-    /**
-     * 메서드 인수의 타입과 입력된 값의 타입이 맞지않는 경우 발생
-     */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<Result> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception, WebRequest request) {
         FieldError fieldError = new FieldError(exception.getName(), exception.getMessage());
@@ -83,10 +84,6 @@ public class CustomExceptionHandler {
         return ResponseEntity.badRequest().body(errorResult);
     }
 
-
-    /**
-     * 필수값이 없는 경우 발생
-     */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     protected ResponseEntity<Result> handleMissingServletRequestParameterException(MissingServletRequestParameterException exception, WebRequest request) {
         FieldError fieldError = new FieldError(exception.getParameterName(), exception.getMessage());
@@ -94,9 +91,6 @@ public class CustomExceptionHandler {
         return ResponseEntity.badRequest().body(errorResult);
     }
 
-    /**
-     * Authentication 객체가 필요한 권한을 보유하지 않은 경우 발생합니다.
-     */
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<Result> handleAccessDeniedException(AccessDeniedException exception, WebRequest request) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Result(HttpStatus.FORBIDDEN));
@@ -138,6 +132,15 @@ public class CustomExceptionHandler {
         log.debug("ClientAbortException: Broken pipe - client likely disconnected. Message: {}", exception.getMessage());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Result> handleIllegalStateException(IllegalStateException exception, WebRequest request) {
+        log.error("IllegalStateException: {}", exception.getMessage());
+
+        Result errorResult = new Result(HttpStatus.BAD_REQUEST, exception.getMessage());
+
+        return ResponseEntity.badRequest().body(errorResult);
+    }
+    
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Result> handleException(Exception exception, WebRequest request) {
 
