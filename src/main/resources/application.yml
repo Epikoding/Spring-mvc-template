@@ -7,65 +7,45 @@ spring:
     url: jdbc:mysql://localhost:3306/test?useUnicode=yes&useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=utf8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root1234
+    password: root
     maximum-pool-size: 2    #커넥션 사이즈
   jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
     show-sql: true
+    generate-ddl: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none # 이미 운영중인 DB를 건드리므로, 실수로라도 변경되지 않도록 DDL 자동 관련 코드는 모두 꺼두자.
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
         default_batch_fetch_size: 1000
         query:
           plan_cache_max_size: 500
           plan_parameter_metadata_max_size: 32
-  jackson:
-    time-zone: Asia/Seoul
-    serialization:
-      write-dates-as-timestamps: false
-      fail-on-empty-beans: false #Lazy 로딩 시, 오류 방지
-#  sql: # 초기 데이터 input
-#    init:
-#      data-locations: classpath:data.sql
-#      mode: always
+    servlet:
+      multipart:
+        max-file-size: 200MB
+        max-request-size: 200MB
+    devtools:
+      restart:
+        enabled: false
 
-logging:
-  level:
-    root: warn
-    org.hibernate.SQL: warn
-    org.hibernate.type: warn
-    org.hibernate:
-      type:
-        descriptor.sql: warn
-
-
+# 헬스 체크
 management:
   endpoint:
-    health:
-      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
   endpoints:
     web:
-      base-path: /actuator
       exposure:
-        include: prometheus,health,info
+        include: health, info, metrics, prometheus
+  metrics:
+    tags:
+      application: monitoring
 
-eureka:
-  client:
-#    register-with-eureka: true
-#    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    enabled: false
-
-springdoc:
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
-  swagger-ui:
-    path: /doc
-    tryItOutEnabled: true
-    tagsSorter: alpha
-    filter: true
+logging: # OFF, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+  level:
+    root: INFO  # or DEBUG, depending on how much detail you want in general
