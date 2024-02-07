@@ -29,7 +29,9 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(
         name = "member",
-        indexes = {@Index(columnList = "deleted")}
+        indexes = {
+                @Index(name = "idx_user_email", columnList = "email")
+        }
 )
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE member SET deleted = true WHERE id = ?")
@@ -38,7 +40,7 @@ public class UserEntity extends BaseEntity {
     @Column(unique = true)
     private String email;
 
-    @Column(unique = true)
+    @Column
     private String phone;
 
     @Column
