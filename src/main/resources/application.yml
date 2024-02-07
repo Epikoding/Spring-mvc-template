@@ -4,7 +4,7 @@ spring:
   application:
     name: template-service
   datasource:
-    url: jdbc:mysql://localhost:3306/test?useUnicode=yes&useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/template-db?useUnicode=yes&useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=utf8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
@@ -30,6 +30,10 @@ spring:
     devtools:
       restart:
         enabled: false
+  sql:
+    init:
+      data-locations: classpath:init-data.sql # 초기 데이터 위치
+      mode: always  # 서버 시작 시 데이터 초기화
 
 # 헬스 체크
 management:
