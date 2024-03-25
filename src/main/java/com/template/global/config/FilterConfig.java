@@ -6,6 +6,7 @@ import com.template.global.util.RequestLoggingFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class FilterConfig {
@@ -19,6 +20,7 @@ public class FilterConfig {
     }
 
     @Bean
+    @Profile("!local")
     public FilterRegistrationBean<RateLimitingFilter> rateLimitingFilter(){
         FilterRegistrationBean<RateLimitingFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new RateLimitingFilter());
