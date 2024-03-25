@@ -10,19 +10,17 @@ import com.template.domain.user.dto.CreateNewUserDto;
 import com.template.domain.user.dto.UserDto;
 import com.template.domain.user.entity.AuthorityEntity;
 import com.template.domain.user.entity.UserEntity;
-import com.template.domain.user.repository.UserRepository;
 import com.template.global.common.Result;
 import com.template.global.common.enums.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -30,15 +28,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("local") // local, dev, prd. local 이외의 환경에서는 RateLimitingFilter가 적용됨. FilterConfig @Profile("!local") 참고
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 class TestControllerUser {
