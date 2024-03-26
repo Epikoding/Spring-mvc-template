@@ -1,4 +1,4 @@
-package com.template.domain.user;
+package com.template.domain.user.service;
 
 
 import com.template.domain.user.entity.AuthorityEntity;

@@ -12,4 +12,8 @@ public class UserExpression {
     public static BooleanExpression between(LocalDateTime from, LocalDateTime to) {
         return Objects.isNull(from) || Objects.isNull(to) ? null : userEntity.createdAt.between(from, to);
     }
+
+    public static BooleanExpression eqEmailAddress(String emailAddress) {
+        return Objects.isNull(emailAddress) ? null : userEntity.email.eq(emailAddress);
+    }
 }

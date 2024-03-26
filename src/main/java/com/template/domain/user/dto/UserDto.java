@@ -1,10 +1,14 @@
 package com.template.domain.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.template.domain.user.entity.AuthorityEntity;
 import com.template.domain.user.entity.UserEntity;
 import com.template.global.common.BaseDto;
+import com.template.global.common.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 public class UserDto {
@@ -27,15 +31,38 @@ public class UserDto {
 
     @Getter
     @NoArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Response {
         private Long id;
+        private String email;
+        private String phone;
+        private String name;
+        private List<Role> roleList;
 
         public Response(Long id) {
             this.id = id;
         }
 
+        public Response(String email, String phone, String name, List<Role> roleList) {
+            this.email = email;
+            this.phone = phone;
+            this.name = name;
+            this.roleList = roleList;
+        }
+
+        public Response(UserEntity userEntity) {
+            this.email = userEntity.getEmail();
+            this.phone = userEntity.getPhone();
+            this.name = userEntity.getName();
+        }
+
+
         public static Response from(Long id) {
             return new Response(id);
+        }
+
+        public static Response from(UserEntity userEntity) {
+            return new Response(userEntity);
         }
     }
 }
