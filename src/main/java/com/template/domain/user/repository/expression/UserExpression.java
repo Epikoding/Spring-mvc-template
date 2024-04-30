@@ -16,4 +16,8 @@ public class UserExpression {
     public static BooleanExpression eqEmailAddress(String emailAddress) {
         return Objects.isNull(emailAddress) ? null : userEntity.email.eq(emailAddress);
     }
+
+    public static BooleanExpression eqId(Long id) {
+        return Objects.isNull(id) ? null : userEntity.id.eq(id);
+    }
 }

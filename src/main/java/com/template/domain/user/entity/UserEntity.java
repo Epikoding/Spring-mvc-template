@@ -1,5 +1,7 @@
 package com.template.domain.user.entity;
 
+import com.template.domain.user.dto.UserUpdateDto;
+import com.template.global.common.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,17 +13,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
-import com.template.global.common.BaseEntity;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -61,7 +59,7 @@ public class UserEntity extends BaseEntity {
     @Column
     private LocalDateTime passwordUpdatedAt;
 
-    @OneToMany(mappedBy = "userEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAuthorityEntity> userAuthorityList = new ArrayList<>();
 
 
@@ -91,5 +89,11 @@ public class UserEntity extends BaseEntity {
 
     public static UserEntity createInstance(String email, String phone, String name, String password, AuthorityEntity authorityEntity) {
         return new UserEntity(email, phone, name, password, authorityEntity);
+    }
+
+    public void update(UserUpdateDto.Request userUpdateDto) {
+        this.email = userUpdateDto.getEmail();
+        this.phone = userUpdateDto.getPhone();
+        this.name = userUpdateDto.getName();
     }
 }
