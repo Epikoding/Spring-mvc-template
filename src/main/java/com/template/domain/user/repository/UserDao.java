@@ -3,6 +3,7 @@ package com.template.domain.user.repository;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.template.domain.user.dto.UserDto;
+import com.template.domain.user.entity.UserEntity;
 import com.template.domain.user.repository.expression.UserExpression;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,11 +24,9 @@ import static com.template.domain.user.entity.QUserEntity.userEntity;
 @Service
 @RequiredArgsConstructor
 public class UserDao {
-
     private final JPAQueryFactory queryFactory;
 
     private <K, U, T> Map<K, U> toMap(List<T> tuples, Function<T, K> keyMapper, Function<T, U> valueMapper, BinaryOperator<U> mergeFunction) {
-
         return tuples.stream()
                 .collect(Collectors.toMap(keyMapper, valueMapper, mergeFunction));
     }
@@ -60,5 +59,19 @@ public class UserDao {
                 });
 
         return userResponseMap.values().stream().findFirst();
+    }
+
+    public Optional<UserEntity> findUserById(Long id) {
+        return Optional.ofNullable(queryFactory
+                .selectFrom(userEntity)
+                .where(UserExpression.eqId(id))
+                .fetchFirst()
+        );
+    }
+
+    public List<UserEntity> findAll() {
+        return queryFactory
+                .selectFrom(userEntity)
+                .fetch();
     }
 }
