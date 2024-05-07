@@ -1,6 +1,7 @@
 package com.template.global.config;
 
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
@@ -8,12 +9,9 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 @Component
+@RequiredArgsConstructor
 public class CacheMonitor {
     private final CacheManager cacheManager;
-
-    public CacheMonitor(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
-    }
 
     public void printCacheInfo() {
         Collection<String> cacheNames = cacheManager.getCacheNames();

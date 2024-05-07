@@ -2,6 +2,7 @@ package com.template.domain.cache.service;
 
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import com.template.domain.cache.dto.CacheInfo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -9,14 +10,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class CacheMonitorService {
     private final CacheManager cacheManager;
-
-    public CacheMonitorService(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
-    }
 
     public List<CacheInfo> getCacheInfo() {
         List<CacheInfo> cacheInfoList = new ArrayList<>();
@@ -39,5 +38,15 @@ public class CacheMonitorService {
             }
         }
         return cacheInfoList;
+    }
+
+    public Collection<String> clearAllCaches() {
+        Collection<String> cacheNames = cacheManager.getCacheNames();
+        cacheNames.stream()
+                .map(cacheManager::getCache)
+                .filter(Objects::nonNull)
+                .forEach(Cache::clear);
+
+        return cacheNames;
     }
 }
