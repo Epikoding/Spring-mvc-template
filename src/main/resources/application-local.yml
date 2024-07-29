@@ -53,3 +53,5 @@ management:
 logging: # OFF, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
   level:
     root: INFO  # or DEBUG, depending on how much detail you want in general
+    org.springframework.transaction: TRACE
+    org.springframework.orm.jpa: DEBUG
