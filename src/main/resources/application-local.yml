@@ -8,7 +8,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
-    maximum-pool-size: 2    #커넥션 사이즈
+    hikari:
+      maximum-pool-size: 2    #커넥션 사이즈
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
@@ -23,13 +24,10 @@ spring:
         query:
           plan_cache_max_size: 500
           plan_parameter_metadata_max_size: 32
-    servlet:
-      multipart:
-        max-file-size: 200MB
-        max-request-size: 200MB
-    devtools:
-      restart:
-        enabled: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   sql:
     init:
       data-locations: classpath:init-data.sql # 초기 데이터 위치
