@@ -1,5 +1,6 @@
 package com.template.domain.user.entity;
 
+import com.template.domain.user.dto.UserCreateDto;
 import com.template.domain.user.dto.UserDto;
 import com.template.domain.user.dto.UserUpdateDto;
 import com.template.global.common.BaseEntity;
@@ -93,6 +94,10 @@ public class UserEntity extends BaseEntity {
 
     public static UserEntity createInstance(UserDto.Request userDto, AuthorityEntity authorityEntity) {
         return new UserEntity(userDto.getEmail(), userDto.getPhone(), userDto.getName(), userDto.getPassword(), authorityEntity);
+    }
+
+    public static UserEntity createInstance(UserCreateDto.Request userDto, AuthorityEntity temporaryAuthorityEntity) {
+        return new UserEntity(userDto.email(), userDto.phone(), userDto.name(), userDto.password(), temporaryAuthorityEntity);
     }
 
     public void update(UserUpdateDto.Request userUpdateDto) {

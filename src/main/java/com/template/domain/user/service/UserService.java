@@ -87,7 +87,7 @@ public class UserService {
 
         AuthorityEntity temporaryAuthorityEntity = authorityService.getAuthorityEntityByRole(Role.TEMPORARY);
 
-        UserEntity userEntity = userDto.toEntityWithAuthority(temporaryAuthorityEntity);
+        UserEntity userEntity = UserEntity.createInstance(userDto, temporaryAuthorityEntity);
         userEntity = userRepository.save(userEntity);
 
         return UserCreateDto.Response.from(userEntity.getId());

@@ -105,7 +105,8 @@ class UserIntegrationTest {
         for (int i = 0; i < numberOfRequests; i++) {
             UserCreateDto.Request newUserDto = createNewUserDto(i);
             AuthorityEntity authorityEntity = authorityService.getAuthorityEntityByRole(Role.TEMPORARY);
-            UserEntity entityWithAuthority = newUserDto.toEntityWithAuthority(authorityEntity);
+            UserEntity entityWithAuthority = UserEntity.createInstance(newUserDto, authorityEntity);
+
             userService.save(entityWithAuthority);
         }
 
