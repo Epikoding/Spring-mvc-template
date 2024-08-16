@@ -1,0 +1,55 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: template-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/template-db?useUnicode=yes&useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=utf8&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: i4inlove
+    hikari:
+      maximum-pool-size: 2    #커넥션 사이즈
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none # 이미 운영중인 DB를 건드리므로, 실수로라도 변경되지 않도록 DDL 자동 관련 코드는 모두 꺼두자.
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000
+        query:
+          plan_cache_max_size: 500
+          plan_parameter_metadata_max_size: 32
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  sql:
+    init:
+      data-locations: classpath:init-data.sql # 초기 데이터 위치
+      mode: always  # 서버 시작 시 데이터 초기화
+
+# 헬스 체크
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  metrics:
+    tags:
+      application: monitoring
+
+logging: # OFF, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+  level:
+    root: INFO  # or DEBUG, depending on how much detail you want in general
+    org.springframework.transaction: TRACE
+    org.springframework.orm.jpa: DEBUG

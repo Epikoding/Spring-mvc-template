@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.vladimir-bukhtoyarov:bucket4j-core:7.5.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="com.github.vladimir-bukhtoyarov" artifactId="bucket4j-core" version="7.5.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.vladimir-bukhtoyarov/bucket4j-core/7.5.0/6c2ab325bffa42318df298cd450ee60097163c37/bucket4j-core-7.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
